@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# PyCharm project directory
+.idea
+
+# bnstat's data file
+bnstats.json
