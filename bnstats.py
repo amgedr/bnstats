@@ -67,25 +67,6 @@ def read_datafile():
         sys.exit(1)
 
 
-def by_county(nodes, top):
-    """Iterator for countries and their total nodes."""
-    countries = {}
-    for node in nodes["nodes"]:
-        country = nodes["nodes"][node][7]
-        if country is not None and country != "":
-            countries[country] = countries.get(country, 0) + 1
-        else:
-            countries["  "] = countries.get(country, 0) + 1
-
-    i = 0
-    for country in sorted(countries, key=countries.get, reverse=True):
-        yield country, countries[country]
-
-        i += 1
-        if i == top:
-            break
-
-
 def by_country_formatted(nodes, top):
     """Prints countries and their total nodes."""
     ts = time.localtime(nodes["timestamp"])  # get snapshopt time from JSON
@@ -96,7 +77,7 @@ def by_country_formatted(nodes, top):
 
     total = 0
     i = 0
-    for country, count in by_county(nodes, top):
+    for country, count in node_counter(nodes, 7, top):
         i += 1
         total += count
         print("{:>3}   {:<5}{:>21d}".format(i, country, count))
@@ -104,25 +85,6 @@ def by_country_formatted(nodes, top):
     print("-" * 32)
     print("Nodes in top {:<6} {:>12}".format(top, total))
     print("Total nodes {:>20}\n".format(nodes["total_nodes"]))
-
-
-def by_network(nodes, top):
-    """Iterator for networks and their total nodes."""
-    networks = {}
-    for node in nodes["nodes"]:
-        nw = nodes["nodes"][node][12]
-        if nw is not None and nw != "":
-            networks[nw] = networks.get(nw, 0) + 1
-        else:
-            networks["  "] = networks.get(nw, 0) + 1
-
-    i = 0
-    for nw in sorted(networks, key=networks.get, reverse=True):
-        yield nw, networks[nw]
-
-        i += 1
-        if i == top:
-            break
 
 
 def by_network_formatted(nodes, top):
@@ -135,7 +97,8 @@ def by_network_formatted(nodes, top):
 
     total = 0
     i = 0
-    for nw, count in by_network(nodes, top):
+
+    for nw, count in node_counter(nodes, 12, top):
         i += 1
         total += count
         print("{:>3}  {:<69} {:>5}".format(i, nw[:69], count))
@@ -145,20 +108,38 @@ def by_network_formatted(nodes, top):
     print("Total nodes {:>68}\n".format(nodes["total_nodes"]))
 
 
+def node_counter(nodes, index, top):
+    """Generator for counting totals."""
+    counter = {}
+    for node in nodes["nodes"]:
+        name = nodes["nodes"][node][index]
+        if name is None or name == '':
+            name = "n/a"
+        counter[name] = counter.get(name, 0) + 1
+
+    i = 0
+    for name in sorted(counter, key=counter.get, reverse=True):
+        yield name, counter[name]
+
+        i += 1
+        if i == top:
+            break
+
+
 if __name__ == '__main__':
     args = docopt(__doc__, help=True, version='bnstats v0.1')
     top_arg = int(args['--top'])  # docopt returns 10 if not set
 
     if args["countries"]:
         if args["--raw"]:
-            for country, cnt in by_county(read_datafile(), top_arg):
+            for country, cnt in node_counter(read_datafile(), 7, top_arg):
                 print("{}\t{}".format(country, cnt))
         else:
             by_country_formatted(read_datafile(), top_arg)
 
     elif args["networks"]:
         if args["--raw"]:
-            for nw, cnt in by_network(read_datafile(), top_arg):
+            for nw, cnt in node_counter(read_datafile(), 12, top_arg):
                 print("{}\t{}".format(nw, cnt))
         else:
             by_network_formatted(read_datafile(), top_arg)
