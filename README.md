@@ -57,7 +57,7 @@ bnstats.py countries -r
 ```
 
 ### Contributing
-* If you've got any suggestions or questions, [please create an issue here](https://github.com/codehill/nbstats/issues).
+* If you've got any suggestions or questions, [please create an issue here](https://github.com/codehill/bnstats/issues).
 * If you want to fix a bug or implement a feature, please feel free to do so. Just send me a pull request.
 
 ### License

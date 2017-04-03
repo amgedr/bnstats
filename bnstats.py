@@ -14,8 +14,8 @@ Usage:
   bnstats.py -v, --version
 
 Options:
-  countries                 List total nodes by countries
-  networks                  List total nodes by ISPs
+  countries                 List total nodes by country
+  networks                  List total nodes by ISP
   refresh                   Redownload the data from bitnodes.21.co
   -t <num>, --top <num>     Number of rows returned [default: 10]
   -r, --raw                 Return raw output
@@ -92,7 +92,7 @@ def by_network_formatted(nodes, top):
     ts = time.localtime(nodes["timestamp"])  # get snapshopt time from JSON
 
     print("Snapshot: {}".format(time.strftime("%Y-%m-%d %H:%M", ts)))
-    print("\nNo.  Network{}Total".format(" " * 63))
+    print("\nNo.   Network{}Total".format(" " * 62))
     print("-" * 80)
 
     total = 0
@@ -101,7 +101,7 @@ def by_network_formatted(nodes, top):
     for nw, count in node_counter(nodes, 12, top):
         i += 1
         total += count
-        print("{:>3}  {:<69} {:>5}".format(i, nw[:69], count))
+        print("{:>4}  {:<68} {:>5}".format(i, nw[:69], count))
 
     print("-" * 80)
     print("Nodes in top {:<6} {:>60}".format(top, total))
