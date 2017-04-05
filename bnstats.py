@@ -67,47 +67,6 @@ def read_datafile():
         sys.exit(1)
 
 
-def by_country_formatted(nodes, top):
-    """Prints countries and their total nodes."""
-    ts = time.localtime(nodes["timestamp"])  # get snapshopt time from JSON
-
-    print("Snapshot: {}".format(time.strftime("%Y-%m-%d %H:%M", ts)))
-    print("\nNo.   Country{}Total".format(" " * 14))
-    print("-" * 32)
-
-    total = 0
-    i = 0
-    for country, count in node_counter(nodes, 7, top):
-        i += 1
-        total += count
-        print("{:>3}   {:<5}{:>21d}".format(i, country, count))
-
-    print("-" * 32)
-    print("Nodes in top {:<6} {:>12}".format(top, total))
-    print("Total nodes {:>20}\n".format(nodes["total_nodes"]))
-
-
-def by_network_formatted(nodes, top):
-    """Print networks and their total nodes."""
-    ts = time.localtime(nodes["timestamp"])  # get snapshopt time from JSON
-
-    print("Snapshot: {}".format(time.strftime("%Y-%m-%d %H:%M", ts)))
-    print("\nNo.   Network{}Total".format(" " * 62))
-    print("-" * 80)
-
-    total = 0
-    i = 0
-
-    for nw, count in node_counter(nodes, 12, top):
-        i += 1
-        total += count
-        print("{:>4}  {:<68} {:>5}".format(i, nw[:69], count))
-
-    print("-" * 80)
-    print("Nodes in top {:<6} {:>60}".format(top, total))
-    print("Total nodes {:>68}\n".format(nodes["total_nodes"]))
-
-
 def node_counter(nodes, index, top):
     """Generator for counting totals."""
     counter = {}
@@ -126,23 +85,49 @@ def node_counter(nodes, index, top):
             break
 
 
+def print_formatted(label, api_index, top):
+    nodes = read_datafile()
+    ts = time.localtime(nodes['timestamp'])  # get snapshopt time from JSON
+
+    # print the table header
+    print("Snapshot: {}".format(time.strftime("%Y-%m-%d %H:%M", ts)))
+    print("\nNo.   {:<69}Total".format(label))
+    print("-" * 80)
+
+    total = 0
+    index = 0
+    for name, count in node_counter(read_datafile(), api_index, top):
+        total += count
+        index += 1
+        print("{:>4}  {:<68} {:>5}".format(index, name[:69], count))
+
+    # print the table footer
+    print("-" * 80)
+    print("Nodes in top {:<6} {:>60}".format(top, total))
+    print("Total nodes {:>68}\n".format(nodes['total_nodes']))
+
+
+def print_raw(api_index, top):
+    nodes = read_datafile()
+    for name, count in node_counter(nodes, api_index, top):
+        print("{}\t{}".format(name, count))
+
+
 if __name__ == '__main__':
     args = docopt(__doc__, help=True, version='bnstats v0.1')
     top_arg = int(args['--top'])  # docopt returns 10 if not set
 
     if args["countries"]:
         if args["--raw"]:
-            for country, cnt in node_counter(read_datafile(), 7, top_arg):
-                print("{}\t{}".format(country, cnt))
+            print_raw(7, top_arg)
         else:
-            by_country_formatted(read_datafile(), top_arg)
+            print_formatted("Countries", 7, top_arg)
 
     elif args["networks"]:
         if args["--raw"]:
-            for nw, cnt in node_counter(read_datafile(), 12, top_arg):
-                print("{}\t{}".format(nw, cnt))
+            print_raw(12, top_arg)
         else:
-            by_network_formatted(read_datafile(), top_arg)
+            print_formatted("Networks", 12, top_arg)
 
     elif args["refresh"]:
         download_data()

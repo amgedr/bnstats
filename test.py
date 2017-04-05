@@ -21,11 +21,11 @@ class DataFile(unittest.TestCase):
 
 class Data(unittest.TestCase):
     def test_countries(self):
-        countries = bnstats.by_county(bnstats.read_datafile(), 10)
+        countries = bnstats.node_counter(bnstats.read_datafile(), 7, 10)
         self.assertEqual(len(list(countries)), 10)
 
     def test_networks(self):
-        networks = bnstats.by_network(bnstats.read_datafile(), 10)
+        networks = bnstats.node_counter(bnstats.read_datafile(), 12, 10)
         self.assertEqual(len(list(networks)), 10)
 
 if __name__ == '__main__':
