@@ -29,6 +29,7 @@ import json
 import time
 import requests
 from docopt import docopt
+from iso3166 import countries
 
 SNAPSHOT_URL = "https://bitnodes.21.co/api/v1/snapshots/latest/"
 DATA_FILE = 'bnstats.json'
@@ -99,6 +100,12 @@ def print_formatted(label, api_index, top):
     for name, count in node_counter(read_datafile(), api_index, top):
         total += count
         index += 1
+
+        if api_index == 7:  # its by countries
+            country = countries.get(name, None)
+            if country:
+                name = country.name
+
         print("{:>4}  {:<68} {:>5}".format(index, name[:69], count))
 
     # print the table footer
