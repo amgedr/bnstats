@@ -8,8 +8,8 @@ To keep the script responsive the data is downloaded automatically only if the
 file _bnstats.json_ does not exist. To download the latest snapshot manually, 
 run bnstats with the _refresh_ command. 
 
-Currently the data can be summerized by countries and service providers hosting 
-the Bitcoin nodes. I plan to add more later on.
+The Bitcoin nodes list can be summerized by countries, hostname, time zone,
+user-agent and service providers hosting the Bitcoin nodes.
 
 ### Installation
 You can download the script by cloning the GitHub repo:
@@ -27,6 +27,9 @@ pip3 install -r requirements.txt
 ```
 bnstats.py [-rt <num>] countries
 bnstats.py [-rt <num>] networks
+bnstats.py [-rt <num>] hostnames
+bnstats.py [-rt <num>] timezones
+bnstats.py [-rt <num>] useragents
 bnstats.py refresh
 bnstats.py -h, --help
 bnstats.py -v, --version
@@ -34,6 +37,9 @@ bnstats.py -v, --version
 Options:
   countries                 List total nodes by country
   networks                  List total nodes by ISP
+  hostnames                 List total nodes by hostname
+  timezones                 List total nodes by timezone
+  useragents                List total nodes by user-agent
   refresh                   Redownload the data from bitnodes.21.co
   -t <num>, --top <num>     Number of rows returned [default: 10]
   -r, --raw                 Return raw output

@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 """
-bnstats.py v0.1 - Bitcoin nodes stats from bitnodes.21.co
+bnstats.py v0.2 - Bitcoin nodes stats from bitnodes.21.co
 This is a free software and it comes with absolutely no warranty.
 You can distribute and modify it under terms of the MIT License.
 Homepage: https://github.com/codehill/bnstats
@@ -9,6 +9,9 @@ Homepage: https://github.com/codehill/bnstats
 Usage:
   bnstats.py [-rt <num>] countries
   bnstats.py [-rt <num>] networks
+  bnstats.py [-rt <num>] hostnames
+  bnstats.py [-rt <num>] timezones
+  bnstats.py [-rt <num>] useragents
   bnstats.py refresh
   bnstats.py -h, --help
   bnstats.py -v, --version
@@ -16,6 +19,9 @@ Usage:
 Options:
   countries                 List total nodes by country
   networks                  List total nodes by ISP
+  hostnames                 List total nodes by hostname
+  timezones                 List total nodes by timezone
+  useragents                List total nodes by user-agent
   refresh                   Redownload the data from bitnodes.21.co
   -t <num>, --top <num>     Number of rows returned [default: 10]
   -r, --raw                 Return raw output
@@ -106,7 +112,7 @@ def print_formatted(label, api_index, top):
             if country:
                 name = country.name
 
-        print("{:>4}  {:<68} {:>5}".format(index, name[:69], count))
+        print("{:>4}  {:<68} {:>5}".format(index, name[:68], count))
 
     # print the table footer
     print("-" * 80)
@@ -135,6 +141,24 @@ if __name__ == '__main__':
             print_raw(12, top_arg)
         else:
             print_formatted("Networks", 12, top_arg)
+
+    elif args["hostnames"]:
+        if args["--raw"]:
+            print_raw(5, top_arg)
+        else:
+            print_formatted("Hostnames", 5, top_arg)
+
+    elif args["timezones"]:
+        if args["--raw"]:
+            print_raw(10, top_arg)
+        else:
+            print_formatted("Hostnames", 10, top_arg)
+
+    elif args["useragents"]:
+        if args["--raw"]:
+            print_raw(1, top_arg)
+        else:
+            print_formatted("Hostnames", 1, top_arg)
 
     elif args["refresh"]:
         download_data()
