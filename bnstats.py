@@ -130,35 +130,21 @@ if __name__ == '__main__':
     args = docopt(__doc__, help=True, version='bnstats v0.1')
     top_arg = int(args['--top'])  # docopt returns 10 if not set
 
-    if args["countries"]:
-        if args["--raw"]:
-            print_raw(7, top_arg)
-        else:
-            print_formatted("Countries", 7, top_arg)
+    # location of data in returned list of nodes
+    data = {"countries": 7, "networks": 12, "hostnames": 5,
+            "timezones": 10, "useragents": 1}
 
-    elif args["networks"]:
-        if args["--raw"]:
-            print_raw(12, top_arg)
-        else:
-            print_formatted("Networks", 12, top_arg)
-
-    elif args["hostnames"]:
-        if args["--raw"]:
-            print_raw(5, top_arg)
-        else:
-            print_formatted("Hostnames", 5, top_arg)
-
-    elif args["timezones"]:
-        if args["--raw"]:
-            print_raw(10, top_arg)
-        else:
-            print_formatted("Hostnames", 10, top_arg)
-
-    elif args["useragents"]:
-        if args["--raw"]:
-            print_raw(1, top_arg)
-        else:
-            print_formatted("Hostnames", 1, top_arg)
-
-    elif args["refresh"]:
+    loc = None
+    if args["refresh"]:
         download_data()
+    else:
+        # get command; docopt returns help text if more than one were entered
+        sel = [key for key, value in args.items()
+               if value and not key.startswith("-")]
+        loc = data[sel[0]]
+        label = sel[0].title()
+
+        if args["--raw"]:
+            print_raw(loc, top_arg)
+        else:
+            print_formatted(label, loc, top_arg)
